@@ -47,10 +47,10 @@ SRC_DOCS_DIR=${INSTALLPATH}/seafile/docs/
 # Seafile DB
 # -------------------------------------------
 
-SEAFILE_SQL_USER=$(mysql -h127.0.0.1 -p3306 -uroot -p$MYSQL_ROOT_PASSWORD -sse "SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = 'seafile')")
+SEAFILE_SQL_USER=$(mysql -h$MYSQL_HOST -p3306 -uroot -p$MYSQL_ROOT_PASSWORD -sse "SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = 'seafile')")
 
 if [ "$SEAFILE_SQL_USER" = "1" ];then
-    mysql -h127.0.0.1 -p3306 -uroot -p$MYSQL_ROOT_PASSWORD -sse "DROP USER 'seafile'@'%'"
+    mysql -h$MYSQL_HOST -p3306 -uroot -p$MYSQL_ROOT_PASSWORD -sse "DROP USER 'seafile'@'%'"
 fi
 
 [ -z "$SQLSEAFILEPW" ] && SQLSEAFILEPW=$(pwgen)
@@ -68,7 +68,7 @@ GRANT ALL PRIVILEGES ON seafile_db.* TO 'seafile'@'%';
 GRANT ALL PRIVILEGES ON seafile_seahub.* TO 'seafile'@'%';
 EOF
 
-mysql -h127.0.0.1 -p3306 -uroot -p$MYSQL_ROOT_PASSWORD <<EOF
+mysql -h$MYSQL_HOST -p3306 -uroot -p$MYSQL_ROOT_PASSWORD <<EOF
 source /tmp/create_tables.sql;
 use seafile_seahub;
 source ${INSTALLPATH}/seahub/sql/mysql.sql;
@@ -94,7 +94,7 @@ cat >> ${DEFAULT_CONF_DIR}/ccnet.conf <<EOF
 
 [Database]
 ENGINE = mysql
-HOST = 127.0.0.1
+HOST = $MYSQL_HOST
 PORT = 3306
 USER = seafile
 PASSWD = $SQLSEAFILEPW
@@ -130,7 +130,7 @@ DATABASES = {
         'NAME': 'seafile_seahub',
         'USER': 'seafile',
         'PASSWORD': '$SQLSEAFILEPW',
-        'HOST': '127.0.0.1',
+        'HOST': '$MYSQL_HOST',
         'PORT': 3306
     }
 }
@@ -164,7 +164,7 @@ cat >> ${DEFAULT_CONF_DIR}/seafile.conf <<EOF
 
 [database]
 type = mysql
-host = 127.0.0.1
+host = $MYSQL_HOST
 port = 3306
 user = seafile
 password = $SQLSEAFILEPW
