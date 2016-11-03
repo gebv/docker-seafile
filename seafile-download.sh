@@ -14,10 +14,10 @@ wget=$?
 which curl > /dev/null
 curl=$?
 if [ $wget -eq 0 ]; then
-    addr=$(wget -c -t 10 -T 120 https://www.seafile.com/download/ -O - | grep -o -P "$regexp" | head -1)
+    addr=$(wget -c -t 10 -T 120 https://www.seafile.com/en/download/ -O - | grep -o -P "$regexp" | head -1)
     wget -q -c -t 10 -T 120 $addr
 elif [ $curl -eq 0 ]; then
-    addr=$(curl -C - -Ls https://www.seafile.com/download/ | grep -o -P "$regexp" | head -1)
+    addr=$(curl -C - -Ls https://www.seafile.com/en/download/ | grep -o -P "$regexp" | head -1)
     curl -Ls -C - -O $addr 
 else
     echo "Neither curl nor wget found. Exiting."
